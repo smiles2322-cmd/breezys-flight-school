@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#a9d6ff">
+<meta name="description" content="Breezy's Flight School: a gentle 3D flying game for kids where a little pegasus foal learns to fly. Playable with sound and vibration guidance for blind and low-vision players.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Breezy Flight">
+<title>Breezy's Flight School</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+<div id="loading" class="loading" role="status">Loading Breezy's Flight School…</div>
+<div id="nogl" class="panel nogl" hidden role="alert"><h2>Oh no!</h2><p>This device can't show 3D graphics right now. Try another browser, or turn on hardware acceleration.</p></div>
+<div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+<div id="alert" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+<main id="ui">
+  <section id="scr-title" class="screen title" aria-labelledby="t-title" hidden>
+    <p class="brand">Smiles 2322 presents</p>
+    <h1 id="t-title"><span>Breezy's</span> Flight School</h1>
+    <p id="t-sub" class="tag"></p>
+    <div class="btns">
+      <button id="b-play" class="big primary">Learn to Fly</button>
+      <button id="b-free" class="big">Free Flight</button>
+      <div class="row"><button id="b-settings">Settings</button><button id="b-help">How to Play</button></div>
+    </div>
+  </section>
+
+  <section id="scr-lessons" class="screen panel" aria-labelledby="h-lessons" hidden>
+    <h2 id="h-lessons">Flight Lessons</h2>
+    <p class="sub">Grandma Cloudmane will teach Breezy, one step at a time.</p>
+    <ol id="lessonList" class="lessons"></ol>
+    <button id="b-free2" class="big">Free Flight</button>
+    <button class="back">Back</button>
+  </section>
+
+  <section id="scr-settings" class="screen panel" aria-labelledby="h-settings" hidden>
+    <h2 id="h-settings">Settings</h2>
+    <fieldset>
+      <legend>How much help?</legend>
+      <label class="radio"><input type="radio" name="help" value="little"> <span><b>Little Flyer</b><small>Lots of help. Breezy steers toward the goal and flaps when low.</small></span></label>
+      <label class="radio"><input type="radio" name="help" value="junior"> <span><b>Junior Flyer</b><small>Some help, a few breezes.</small></span></label>
+      <label class="radio"><input type="radio" name="help" value="champ"> <span><b>Sky Champ</b><small>You fly on your own. Bigger breezes.</small></span></label>
+    </fieldset>
+    <fieldset>
+      <legend>Blind and low vision</legend>
+      <label class="switch"><input type="checkbox" role="switch" data-set="blind"> <span><b>Blind &amp; Low Vision mode</b><small>Sound beacons that pan left and right, Grandma's voice directions, vibrations, and extra-strong flying help. No timers.</small></span></label>
+    </fieldset>
+    <fieldset>
+      <legend>Sound and feel</legend>
+      <label class="switch"><input type="checkbox" role="switch" data-set="voice"> <span><b>Grandma's voice</b><small>Reads lessons and directions out loud. Turn off if you use a screen reader and hear double.</small></span></label>
+      <label class="switch"><input type="checkbox" role="switch" data-set="music"> <span><b>Music</b></span></label>
+      <label class="switch"><input type="checkbox" role="switch" data-set="sfx"> <span><b>Sound effects</b></span></label>
+      <label class="switch"><input type="checkbox" role="switch" data-set="haptics"> <span><b>Vibration</b><small id="vibNote" hidden>This browser can't vibrate (iPhone Safari doesn't allow it), so sounds play instead.</small></span></label>
+    </fieldset>
+    <fieldset>
+      <legend>Controls</legend>
+      <label class="switch"><input type="checkbox" role="switch" data-set="tilt"> <span><b>Steer by tilting the phone</b><small>Tilt left and right to turn, tip toward you to climb.</small></span></label>
+      <label class="switch"><input type="checkbox" role="switch" data-set="invert"> <span><b>Flip up and down</b><small>Like a real airplane: push down to climb.</small></span></label>
+    </fieldset>
+    <fieldset>
+      <legend>Seeing</legend>
+      <label class="switch"><input type="checkbox" role="switch" data-set="reduceMotion"> <span><b>Reduce motion</b><small>Calmer camera, fewer sparkles.</small></span></label>
+      <label class="switch"><input type="checkbox" role="switch" data-set="contrast"> <span><b>High contrast</b></span></label>
+      <label class="switch"><input type="checkbox" role="switch" data-set="largeText"> <span><b>Large text</b></span></label>
+    </fieldset>
+    <button id="b-reset" class="small">Start over (clear progress)</button>
+    <button class="back big primary">Done</button>
+  </section>
+
+  <section id="scr-help" class="screen panel" aria-labelledby="h-help" hidden>
+    <h2 id="h-help">How to Play</h2>
+    <ul class="howto">
+      <li><b>Flap:</b> tap the big FLAP button, or press Space. Flapping lifts Breezy up.</li>
+      <li><b>Steer:</b> drag the thumb stick, tilt the phone (turn it on in Settings), or use the arrow keys or W A S D.</li>
+      <li><b>Climb and dive:</b> push up to climb and down to dive. Climbing slows you down, diving speeds you up.</li>
+      <li><b>Glide:</b> let go and Breezy glides gently. If she goes too slow she just floats down softly.</li>
+      <li><b>No crashing:</b> touching water makes a happy splash and bounce. Touching grass is a landing. Flap to take off again.</li>
+      <li><b>Lost?</b> Follow the arrow, or tap the speaker button (or press H) and Grandma tells you where to go.</li>
+      <li><b>Blind &amp; Low Vision mode:</b> each goal makes a beeping sound. It moves left and right with the goal, gets higher when the goal is above you, and beeps faster as you get close. A whoosh means you are low, so flap!</li>
+      <li><b>Pause:</b> the pause button, or Escape.</li>
+    </ul>
+    <button class="back big primary">Got it</button>
+  </section>
+
+  <section id="scr-pause" class="screen panel" aria-labelledby="h-pause" hidden>
+    <h2 id="h-pause">Paused</h2>
+    <button id="b-resume" class="big primary">Keep Flying</button>
+    <button id="b-restart">Restart Lesson</button>
+    <button id="b-psettings">Settings</button>
+    <button id="b-quit">Main Menu</button>
+  </section>
+
+  <section id="scr-done" class="screen panel done" aria-labelledby="doneTitle" hidden>
+    <div class="bigstars" aria-hidden="true">★★★</div>
+    <h2 id="doneTitle">Lesson complete!</h2>
+    <p id="doneText"></p>
+    <button id="b-next" class="big primary">Next</button>
+    <button id="b-menu">Lessons</button>
+  </section>
+
+  <div id="firstrun" class="screen panel" role="dialog" aria-modal="true" aria-labelledby="fr-h" aria-describedby="fr-d" hidden>
+    <h2 id="fr-h">Hi! Before we fly…</h2>
+    <p id="fr-d">Would you like <b>Blind &amp; Low Vision mode</b>? Grandma Cloudmane will guide you with sounds, spoken directions, and vibrations, and Breezy gets extra flying help. You can change this any time in Settings.</p>
+    <button id="fr-yes" class="big">Yes, turn it on</button>
+    <button id="fr-no" class="big primary">No thanks</button>
+  </div>
+</main>
+
+<div id="hud" role="region" aria-label="Flying" hidden>
+  <div id="gamefocus" tabindex="-1" role="application" aria-label="Flying. Arrow keys steer, Space flaps, H says where to go, Escape pauses." aria-roledescription="game"></div>
+  <div class="top">
+    <button id="b-pause" class="icon" aria-label="Pause"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1.5" fill="currentColor"/></svg></button>
+    <div class="info"><div id="hudTitle"></div><div id="hudStep"></div><div id="hudCount" role="status"></div></div>
+    <button id="b-where" class="icon" aria-label="Where do I go? Grandma will tell you"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg></button>
+  </div>
+  <div id="alt" aria-hidden="true"><div id="altFill"></div></div>
+  <div id="marker" aria-hidden="true"><svg viewBox="0 0 40 40" width="40" height="40"><path d="M20 36 L6 14 Q20 20 34 14 Z" fill="#ffd84a" stroke="#7a4cc2" stroke-width="3" stroke-linejoin="round"/></svg></div>
+  <div id="toast" aria-hidden="true"></div>
+  <div id="dialog" role="dialog" aria-labelledby="dlgWho" aria-describedby="dlgText" hidden>
+    <div id="dlgWho" class="who">Grandma Cloudmane</div>
+    <p id="dlgText" aria-live="polite"></p>
+    <button id="dlgNext" class="primary">Next</button>
+  </div>
+  <div id="stick" aria-hidden="true"><div id="knob"></div></div>
+  <button id="flap" aria-label="Flap wings">FLAP</button>
+</div>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>
